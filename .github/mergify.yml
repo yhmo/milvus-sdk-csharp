@@ -35,10 +35,11 @@ pull_request_rules:
     conditions:
       - or: *BRANCHES
       - and:
-          - "check-success=Build and test with Milvus v2.3.22"
-          - "check-success=Build and test with Milvus v2.4.23"
-          - "check-success=Build and test with Milvus v2.5.20"
-          - "check-success=Build and test with Milvus v2.6.4"
+          - "check-success=Build and test V1 with Milvus v2.3.22"
+          - "check-success=Build and test V1 with Milvus v2.4.23"
+          - "check-success=Build and test V1 with Milvus v2.5.20"
+          - "check-success=Build and test V1 with Milvus v2.6.20"
+          - "check-success=Build and test V2"
     actions:
       label:
         add:
@@ -48,10 +49,11 @@ pull_request_rules:
     conditions:
       - or: *BRANCHES
       - or:
-          - "check-failure=Build and test with Milvus v2.3.22"
-          - "check-failure=Build and test with Milvus v2.4.23"
-          - "check-failure=Build and test with Milvus v2.5.20"
-          - "check-failure=Build and test with Milvus v2.6.4"
+          - "check-failure=Build and test V1 with Milvus v2.3.22"
+          - "check-failure=Build and test V1 with Milvus v2.4.23"
+          - "check-failure=Build and test V1 with Milvus v2.5.20"
+          - "check-failure=Build and test V1 with Milvus v2.6.20"
+          - "check-failure=Build and test V2"
     actions:
       label:
         remove:
