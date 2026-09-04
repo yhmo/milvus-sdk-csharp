@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <!-- Only measure the SDK assemblies themselves; exclude test plumbing, examples and
+               protobuf/gRPC generated code so the rate reflects hand-written code. -->
+          <Include>
+            <ModulePaths>
+              <ModulePath>Milvus.Client.V2.dll</ModulePath>
+              <ModulePath>Milvus.Client.dll</ModulePath>
+            </ModulePaths>
+          </Include>
+          <ExcludeByAttribute>GeneratedCodeAttribute,CompilerGeneratedAttribute</ExcludeByAttribute>
+          <ExcludeByFilter>Milvus.Client.Grpc.*,Milvus.Proto.*,*Reflection,*Extension</ExcludeByFilter>
+          <ExcludeByFile>**/examples/**,**/Milvus.Client.Tests/**,**/Milvus.Client.V2.Tests/**,**/Protos/**</ExcludeByFile>
+          <UseSourceLink>true</UseSourceLink>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>
