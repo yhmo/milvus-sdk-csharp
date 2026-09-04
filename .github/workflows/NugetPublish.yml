@@ -1,0 +1,58 @@
+name: Publish to nuget.org
+
+on:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # id-token: write is required for Trusted Publishing (GitHub OIDC). See the Trusted Publishing policy
+    # on nuget.org (repository owner: milvus-io, repository: milvus-sdk-csharp, workflow file: NugetPublish.yml).
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          submodules: 'recursive'
+          fetch-depth: 0
+
+      - name: Setup .NET SDKs
+        uses: actions/setup-dotnet@v5
+
+      # https://github.com/dotnet-campus/dotnetCampus.TagToVersion
+      - name: Install dotnet tool
+        run: dotnet tool install -g dotnetCampus.TagToVersion
+
+      - name: Set tag to version
+        run: dotnet TagToVersion -t ${{ github.ref }} -f Version.props
+
+      - name: Build
+        run: dotnet build -c Release
+
+      # Pack the two SDK projects explicitly so the examples/test projects are not published as packages.
+      - name: Pack
+        run: |
+          dotnet pack Milvus.Client/Milvus.Client.csproj -c Release -o Artifacts
+          dotnet pack Milvus.Client.V2/Milvus.Client.V2.csproj -c Release -o Artifacts
+
+      - name: Upload artifacts (nupkg)
+        uses: actions/upload-artifact@v5
+        with:
+          name: nupkgs
+          path: |
+            Artifacts/*.nupkg
+            Artifacts/*.snupkg
+
+      - name: NuGet login (Trusted Publishing: OIDC -> temporary API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Publish to nuget.org
+        run: dotnet nuget push Artifacts/*.nupkg --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
